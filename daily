@@ -1,0 +1,25 @@
+#!/bin/sh
+
+data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
+data_dir=$data_base_dir/daily
+
+editor=${EDITOR:-${VISUAL:-vi}}
+
+date=${1:-"$(date +%F)"}
+file=$data_dir/$date
+
+export GIT_DIR="$data_dir/.git"
+export GIT_WORK_TREE="$data_dir"
+
+if [ "$1" = git ]; then
+    shift
+    exec git "$@"
+fi
+
+mkdir -p "$data_dir"
+
+"$editor" -- "$file"
+
+git init
+git add "$file"
+git commit -m "Updated $date"
