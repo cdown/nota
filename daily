@@ -11,10 +11,7 @@ file=$data_dir/$date
 export GIT_DIR="$data_dir/.git"
 export GIT_WORK_TREE="$data_dir"
 
-if [ "$1" = git ]; then
-    shift
-    exec git "$@"
-fi
+[ "$1" = git ] && exec "$@"
 
 mkdir -p "$data_dir"
 
