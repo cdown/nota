@@ -7,6 +7,7 @@ editor=${EDITOR:-${VISUAL:-vi}}
 
 date=${1:-"$(date +%F)"}
 file=$data_dir/$date
+[ "$GPG" ] && file+=.gpg
 
 export GIT_DIR="$data_dir/.git"
 export GIT_WORK_TREE="$data_dir"
