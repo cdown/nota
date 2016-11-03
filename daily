@@ -23,6 +23,12 @@ mkdir -p "$data_dir"
 
 "$editor" -- "$file"
 
+# It's possible we exited the editor without creating a file in the new case
+if ! [ -f "$file" ]; then
+    printf 'Not committing as %s is missing\n' "$file" >&2
+    exit 5
+fi
+
 git init
 git add "$file"
 git commit -m "Updated $date"
