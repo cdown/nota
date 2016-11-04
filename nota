@@ -1,12 +1,12 @@
 #!/bin/sh
 
-config="${XDG_CONFIG_HOME:-"$HOME/.config"}/daily"
+config="${XDG_CONFIG_HOME:-"$HOME/.config"}/nota"
 
 # shellcheck disable=SC1090
 [ -f "$config" ] && . "$config"
 
 data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
-data_dir=$data_base_dir/daily
+data_dir=$data_base_dir/nota
 
 editor=${EDITOR:-${VISUAL:-vi}}
 
