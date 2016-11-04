@@ -10,9 +10,13 @@ data_dir=$data_base_dir/nota
 
 editor=${EDITOR:-${VISUAL:-vi}}
 
-date=${1:-"$(date +%F)"}
-file=$data_dir/$date
+unsanitised_basename=${1:-"$(date +%F)"}
+
+# Can't use ${file//...} because it's undefined in POSIX sh
+basename=$(printf '%s' "$unsanitised_basename" | tr / _)
+file=$data_dir/$basename
 [ "$GPG" ] && file+=.gpg
+
 
 export GIT_DIR="$data_dir/.git"
 export GIT_WORK_TREE="$data_dir"
@@ -25,10 +29,10 @@ mkdir -p "$data_dir"
 
 # It's possible we exited the editor without creating a file in the new case
 if ! [ -f "$file" ]; then
-    printf 'Not committing as %s is missing\n' "$file" >&2
+    printf 'Not committing as %s is missing\n' "$unsanitised_basename" >&2
     exit 5
 fi
 
 git init
 git add "$file"
-git commit -m "Updated $date"
+git commit -m "Updated $unsanitised_basename"
