@@ -1,5 +1,5 @@
-`nota` is a simple tool to keep a nota log of activities, using git to keep
-history.
+`nota` is a simple tool to make and organise notes, using git to keep history,
+and your favourite editor for editing.
 
 You can enable GPG support by doing the following:
 
