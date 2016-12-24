@@ -8,6 +8,8 @@ config="${XDG_CONFIG_HOME:-"$HOME/.config"}/nota"
 data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
 data_dir=$data_base_dir/nota
 
+cd -- "$data_dir" || exit
+
 editor=${EDITOR:-${VISUAL:-vi}}
 
 unsanitised_basename=${1:-"$(date +%F)"}
@@ -21,7 +23,9 @@ file=$data_dir/$basename
 export GIT_DIR="$data_dir/.git"
 export GIT_WORK_TREE="$data_dir"
 
-[ "$1" = git ] && exec "$@"
+case $1 in
+    git|ls) exec "$@" ;;
+esac
 
 mkdir -p "$data_dir"
 
