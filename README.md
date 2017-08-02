@@ -22,6 +22,9 @@ computer.
     # Edit today's entry (in format YYYY-MM-DD)
     nota
 
+    # Edit the entry from yesterday/today/4 days ago
+    nota (yesterday|today|'4 days ago')
+
     # Edit the entry for Dec 1 2014
     nota 2014-12-01
 
