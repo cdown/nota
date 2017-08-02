@@ -26,7 +26,7 @@ esac
 # Can't use ${file//...} because it's undefined in POSIX sh
 basename=$(printf '%s' "$unsanitised_basename" | tr / _)
 file=$data_dir/$basename
-[ "$GPG" ] && file+=.gpg
+[ "$GPG" ] && file=$file.gpg
 
 mkdir -p "$data_dir"
 
