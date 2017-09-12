@@ -8,6 +8,7 @@ config="${XDG_CONFIG_HOME:-"$HOME/.config"}/nota"
 data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
 data_dir=$data_base_dir/nota
 
+mkdir -p "$data_dir"
 cd -- "$data_dir" || exit
 
 editor=${EDITOR:-${VISUAL:-vi}}
@@ -27,8 +28,6 @@ esac
 basename=$(printf '%s' "$unsanitised_basename" | tr / _)
 file=$data_dir/$basename
 [ "$GPG" ] && file=$file.gpg
-
-mkdir -p "$data_dir"
 
 "$editor" -- "$file"
 
