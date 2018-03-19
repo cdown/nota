@@ -1,0 +1,36 @@
+#!/bin/sh
+
+die() {
+    _ret=$1; shift
+    printf '%s\n' "$@" >&2
+    exit "$_ret"
+}
+
+config="${XDG_CONFIG_HOME:-"$HOME/.config"}/nota"
+
+# shellcheck disable=SC1090
+[ -f "$config" ] && . "$config"
+
+data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
+data_dir=$data_base_dir/nota
+
+mkdir -p "$data_dir"
+cd -- "$data_dir" || exit
+
+todo_file=todo
+[ -f "$todo_file" ] || todo_file=$todo_file.gpg
+[ -f "$todo_file" ] || die 0 "No TODOs yet"
+
+case $todo_file in
+    *.gpg) raw_output=$(gpg -d "$todo_file") ;;
+    *) raw_output=$(cat "$todo_file") ;;
+esac
+
+output=$(
+    printf '%s\n' "$raw_output" |
+        sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/&/\&amp;/g'
+)
+
+if [ "$output" ]; then
+    notify-send -- "You still have items on today's TODO list" "$output"
+fi
