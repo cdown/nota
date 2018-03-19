@@ -34,3 +34,11 @@ computer.
     # Set up git to push somewhere if you want it
     # You can issue arbitrary git commands using `nota git`
     nota git remote add origin <origin>
+
+# nota-todo-reminder
+
+nota-todo-reminder is a small script calling `notify-send` that outputs the
+contents of the nota entry called "todo" if it still contains anything. This
+allows you to use nota to remind you of todo entries using a systemd timer,
+cron script, or similar. Create a note called "todo" and run it to see how it
+works.
