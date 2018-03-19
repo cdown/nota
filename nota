@@ -22,6 +22,9 @@ case $unsanitised_basename in
     *' days ago'|yesterday|tomorrow)
         unsanitised_basename=$(date -d "$unsanitised_basename" +%F)
     ;;
+    todo)
+        unsanitised_basename=todo/$(date +%F)
+    ;;
 esac
 
 # Can't use ${file//...} because it's undefined in POSIX sh
