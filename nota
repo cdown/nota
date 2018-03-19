@@ -23,7 +23,7 @@ case $unsanitised_basename in
         unsanitised_basename=$(date -d "$unsanitised_basename" +%F)
     ;;
     todo)
-        unsanitised_basename=todo/$(date +%F)
+        unsanitised_basename=todo
     ;;
 esac
 
