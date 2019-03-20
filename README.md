@@ -7,7 +7,7 @@ You can enable GPG support by doing the following:
    `~/.config/nota` if it isn't. You can set this as an environment variable
    instead, if you prefer.
 2. Having your editor transparently open gpg files. For example, in vim, you
-   can use [vim-gnupg][].
+   can use [vim-gnupg][]. You can also set a different `PGP_EDITOR`.
 
 My primary motivation for making this was that I used [iDoneThis][] for a long
 time, but now I need to store sensitive entries that should not leave my local

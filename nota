@@ -12,6 +12,8 @@ mkdir -p "$data_dir"
 cd -- "$data_dir" || exit
 
 editor=${EDITOR:-${VISUAL:-vi}}
+[ "$GPG" ] && editor=${PGP_EDITOR:-$editor}
+
 unsanitised_basename=${1:-"$(date +%F)"}
 
 export GIT_DIR="$data_dir/.git"
