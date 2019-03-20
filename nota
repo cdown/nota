@@ -37,7 +37,8 @@ if ! flock -x -n 9; then
     exit 6
 fi
 
-"$editor" -- "$file"
+# $editor is intentionally split to allow multiple args via $IFS
+$editor -- "$file"
 
 # It's possible we exited the editor without creating a file in the new case
 if ! [ -f "$file" ]; then
