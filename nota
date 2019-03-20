@@ -14,6 +14,11 @@ cd -- "$data_dir" || exit
 editor=${EDITOR:-${VISUAL:-vi}}
 [ "$GPG" ] && editor=${PGP_EDITOR:-$editor}
 
+if [ "$NOTA_READ_ONLY" -gt 0 ]; then
+    editor=cat
+    [ "$GPG" ] && editor='gpg -q -d'
+fi
+
 unsanitised_basename=${1:-"$(date +%F)"}
 
 export GIT_DIR="$data_dir/.git"
@@ -32,13 +37,15 @@ file=$data_dir/$basename
 [ "$GPG" ] && file=$file.gpg
 
 exec 9>> "$file"
-if ! flock -x -n 9; then
+if [ "$NOTA_READ_ONLY" -eq 0 ] && ! flock -x -n 9; then
     printf 'Refusing to open %s as it is flocked\n' "$file" >&2
     exit 6
 fi
 
 # $editor is intentionally split to allow multiple args via $IFS
 $editor -- "$file"
+
+[ "$NOTA_READ_ONLY" -gt 0 ] && exit 0
 
 # It's possible we exited the editor without creating a file in the new case
 if ! [ -f "$file" ]; then
