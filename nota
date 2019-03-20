@@ -40,7 +40,7 @@ file=$data_dir/$basename
 [ "$GPG" -gt 0 ] && file=$file.gpg
 
 lock="$file.lock"
-trap 'rm "$lock"' EXIT
+trap 'rm -f "$lock"' EXIT
 
 exec 9> "$lock"
 if [ "$NOTA_READ_ONLY" -eq 0 ] && ! flock -x -n 9; then
@@ -61,4 +61,5 @@ fi
 
 git init
 git add "$file"
+rm -f "$lock"
 git commit -m "Updated $unsanitised_basename"
