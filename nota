@@ -39,7 +39,10 @@ basename=$(printf '%s' "$unsanitised_basename" | tr / _)
 file=$data_dir/$basename
 [ "$GPG" -gt 0 ] && file=$file.gpg
 
-exec 9>> "$file"
+lock="$file.lock"
+trap 'rm "$lock"' EXIT
+
+exec 9> "$lock"
 if [ "$NOTA_READ_ONLY" -eq 0 ] && ! flock -x -n 9; then
     printf 'Refusing to open %s as it is flocked\n' "$file" >&2
     exit 6
