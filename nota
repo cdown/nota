@@ -11,12 +11,15 @@ data_dir=$data_base_dir/nota
 mkdir -p "$data_dir"
 cd -- "$data_dir" || exit
 
+: "${NOTA_READ_ONLY=0}"
+: "${GPG=0}"
+
 editor=${EDITOR:-${VISUAL:-vi}}
-[ "$GPG" ] && editor=${PGP_EDITOR:-$editor}
+[ "$GPG" -gt 0 ] && editor=${PGP_EDITOR:-$editor}
 
 if [ "$NOTA_READ_ONLY" -gt 0 ]; then
     editor=cat
-    [ "$GPG" ] && editor='gpg -q -d'
+    [ "$GPG" -gt 0 ] && editor='gpg -q -d'
 fi
 
 unsanitised_basename=${1:-"$(date +%F)"}
@@ -34,7 +37,7 @@ esac
 # Can't use ${file//...} because it's undefined in POSIX sh
 basename=$(printf '%s' "$unsanitised_basename" | tr / _)
 file=$data_dir/$basename
-[ "$GPG" ] && file=$file.gpg
+[ "$GPG" -gt 0 ] && file=$file.gpg
 
 exec 9>> "$file"
 if [ "$NOTA_READ_ONLY" -eq 0 ] && ! flock -x -n 9; then
