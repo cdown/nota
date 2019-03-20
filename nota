@@ -31,8 +31,8 @@ basename=$(printf '%s' "$unsanitised_basename" | tr / _)
 file=$data_dir/$basename
 [ "$GPG" ] && file=$file.gpg
 
-exec {lock_fd}>> "$file"
-if ! flock -x -n "$lock_fd"; then
+exec 9>> "$file"
+if ! flock -x -n 9; then
     printf 'Refusing to open %s as it is flocked\n' "$file" >&2
     exit 6
 fi
