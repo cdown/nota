@@ -18,6 +18,8 @@ editor=${EDITOR:-${VISUAL:-vi}}
 [ "$GPG" -gt 0 ] && editor=${PGP_EDITOR:-$editor}
 
 if [ "$NOTA_READ_ONLY" -gt 0 ]; then
+    # The linter is wrong here, we don't want to do $(cat).
+    # shellcheck disable=SC2209
     editor=cat
     [ "$GPG" -gt 0 ] && editor='gpg -q -d'
 fi
