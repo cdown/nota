@@ -1,9 +1,8 @@
 #!/bin/sh
 
-raw_output=$(NOTA_READ_ONLY=1 nota todo)
 output=$(
     # Mediocre escaping for notify-send
-    printf '%s\n' "$raw_output" |
+    NOTA_READ_ONLY=1 nota todo |
         sed -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/&/\&amp;/g'
 )
 
