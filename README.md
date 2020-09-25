@@ -9,8 +9,8 @@ You can enable GPG support by doing the following:
 2. Having your editor transparently open gpg files. For example, in vim, you
    can use [vim-gnupg][]. You can also set a different `PGP_EDITOR`.
 
-You can also use read-only mode (which will use `cat` and `gpg -d`) using
-`NOTA_READ_ONLY=1`.
+You can also use read-only mode (which will just display the contents of the
+note) using `NOTA_READ_ONLY=1`.
 
 My primary motivation for making this was that I used [iDoneThis][] for a long
 time, but now I need to store sensitive entries that should not leave my local
