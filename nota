@@ -1,5 +1,7 @@
 #!/bin/bash
 
+shopt -s nullglob
+
 config=${XDG_CONFIG_HOME:-"$HOME/.config"}/nota
 [[ -f "$config" ]] && . "$config"
 
@@ -35,13 +37,23 @@ basename=${unsanitised_basename//\//_}
 file=$data_dir/$basename
 (( GPG )) && file=$file.gpg
 
-lock="$file.lock"
-trap 'rm -f "$lock"' EXIT
+lock_base="$file.lock"
+lock="$lock_base.$$"
 
-exec 9> "$lock"
-if ! (( NOTA_READ_ONLY )) && ! flock -x -n 9; then
-    printf 'Refusing to open %s as it is flocked\n' "$file" >&2
-    exit 6
+if ! (( NOTA_READ_ONLY )); then
+    for existing_lock_file in "$lock_base".*; do
+        pid=${existing_lock_file##*.}
+        if [[ -d "/proc/$pid" ]]; then
+            printf 'Refusing to open %s as it is locked\n' "$file" >&2
+            exit 6
+        else
+            printf 'Removing stale lock %s\n' "$existing_lock_file" >&2
+            rmdir -- "$existing_lock_file"
+        fi
+    done
+
+    trap 'rmdir -- "$lock"' EXIT
+    mkdir -- "$lock"
 fi
 
 $editor -- "$file"
@@ -55,5 +67,6 @@ fi
 
 git init
 git add "$file"
-rm -f "$lock"
+rmdir -- "$lock"
+trap - EXIT
 git commit -m "Updated $unsanitised_basename"
