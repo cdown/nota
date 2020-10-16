@@ -29,7 +29,7 @@ export GIT_WORK_TREE="$data_dir"
 
 case $unsanitised_basename in
     git|ls) exec "$@" ;;
-    *' days ago'|yesterday|tomorrow)
+    *' days ago'|yesterday|tomorrow|today)
         unsanitised_basename=$(date -d "$unsanitised_basename" +%F)
     ;;
 esac
