@@ -1,9 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-config="${XDG_CONFIG_HOME:-"$HOME/.config"}/nota"
-
-# shellcheck disable=SC1090
-[ -f "$config" ] && . "$config"
+config=${XDG_CONFIG_HOME:-"$HOME/.config"}/nota
+[[ -f "$config" ]] && . "$config"
 
 data_base_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
 data_dir=$data_base_dir/nota
@@ -15,13 +13,13 @@ cd -- "$data_dir" || exit
 : "${GPG=0}"
 
 editor=${EDITOR:-${VISUAL:-vi}}
-[ "$GPG" -gt 0 ] && editor=${PGP_EDITOR:-$editor}
+(( GPG )) && editor=${PGP_EDITOR:-"$editor"}
 
-if [ "$NOTA_READ_ONLY" -gt 0 ]; then
+if (( NOTA_READ_ONLY )); then
     # The linter is wrong here, we don't want to do $(cat).
     # shellcheck disable=SC2209
     editor=cat
-    [ "$GPG" -gt 0 ] && editor='gpg -q -d'
+    (( GPG )) && editor='gpg -q -d'
 fi
 
 unsanitised_basename=${1:-"$(date +%F)"}
@@ -36,16 +34,15 @@ case $unsanitised_basename in
     ;;
 esac
 
-# Can't use ${file//...} because it's undefined in POSIX sh
-basename=$(printf '%s' "$unsanitised_basename" | tr / _)
+basename=${unsanitised_basename//\//_}
 file=$data_dir/$basename
-[ "$GPG" -gt 0 ] && file=$file.gpg
+(( GPG )) && file=$file.gpg
 
 lock="$file.lock"
 trap 'rm -f "$lock"' EXIT
 
 exec 9> "$lock"
-if [ "$NOTA_READ_ONLY" -eq 0 ] && ! flock -x -n 9; then
+if ! (( NOTA_READ_ONLY )) && ! flock -x -n 9; then
     printf 'Refusing to open %s as it is flocked\n' "$file" >&2
     exit 6
 fi
@@ -53,10 +50,10 @@ fi
 # $editor is intentionally split to allow multiple args via $IFS
 $editor -- "$file"
 
-[ "$NOTA_READ_ONLY" -gt 0 ] && exit 0
+(( NOTA_READ_ONLY )) && exit 0
 
 # It's possible we exited the editor without creating a file in the new case
-if ! [ -f "$file" ]; then
+if ! [[ -f "$file" ]]; then
     printf 'Not committing as %s is missing\n' "$unsanitised_basename" >&2
     exit 5
 fi
